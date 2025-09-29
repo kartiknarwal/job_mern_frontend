@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Context } from "../../main";
+
 const JobDetails = () => {
   const { id } = useParams();
   const [job, setJob] = useState({});
@@ -10,22 +10,27 @@ const JobDetails = () => {
 
   const { isAuthorized, user } = useContext(Context);
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:4000/api/v1/job/${id}`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setJob(res.data.job);
-      })
-      .catch((error) => {
-        navigateTo("/notfound");
-      });
-  }, []);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // environment variable
 
-  if (!isAuthorized) {
-    navigateTo("/login");
-  }
+  useEffect(() => {
+    if (!isAuthorized) {
+      navigateTo("/login");
+      return;
+    }
+
+    const fetchJob = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/v1/job/${id}`, {
+          withCredentials: true,
+        });
+        setJob(res.data.job);
+      } catch (error) {
+        navigateTo("/notfound");
+      }
+    };
+
+    fetchJob();
+  }, [id, isAuthorized, navigateTo, API_BASE_URL]);
 
   return (
     <section className="jobDetail page">
@@ -33,7 +38,7 @@ const JobDetails = () => {
         <h3>Job Details</h3>
         <div className="banner">
           <p>
-            Title: <span> {job.title}</span>
+            Title: <span>{job.title}</span>
           </p>
           <p>
             Category: <span>{job.category}</span>
@@ -63,9 +68,7 @@ const JobDetails = () => {
               </span>
             )}
           </p>
-          {user && user.role === "Employer" ? (
-            <></>
-          ) : (
+          {user?.role !== "Employer" && (
             <Link to={`/application/${job._id}`}>Apply Now</Link>
           )}
         </div>

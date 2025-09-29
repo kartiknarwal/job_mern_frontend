@@ -1,10 +1,10 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { Context } from "../../main";
-const Application = () => {
 
+const Application = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
@@ -13,16 +13,28 @@ const Application = () => {
   const [resume, setResume] = useState(null);
 
   const { isAuthorized, user } = useContext(Context);
-
   const navigateTo = useNavigate();
+  const { id } = useParams();
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // environment variable
+
+  useEffect(() => {
+    if (!isAuthorized || (user && user.role === "Employer")) {
+      navigateTo("/");
+    }
+  }, [isAuthorized, user, navigateTo]);
+
   const handleFileChange = (e) => {
-    const resume = e.target.files[0];
-    setResume(resume);
+    setResume(e.target.files[0]);
   };
 
-  const { id } = useParams();
   const handleApplication = async (e) => {
     e.preventDefault();
+    if (!resume) {
+      toast.error("Please select a resume file");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -34,7 +46,7 @@ const Application = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:4000/api/v1/application/post",
+        `${API_BASE_URL}/api/v1/application/post`,
         formData,
         {
           withCredentials: true,
@@ -43,29 +55,26 @@ const Application = () => {
           },
         }
       );
+
+      // reset form
       setName("");
       setEmail("");
       setCoverLetter("");
       setPhone("");
       setAddress("");
-      setResume("");
+      setResume(null);
+
       toast.success(data.message);
       navigateTo("/job/getall");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || "Failed to send application");
     }
   };
-  if (!isAuthorized || (user && user.role === "Employer")) {
-    navigateTo("/");
-  }
 
-
-
-  
   return (
     <section className="application">
       <div className="container">
-      <h3>Application Form</h3>
+        <h3>Application Form</h3>
         <form onSubmit={handleApplication}>
           <input
             type="text"
@@ -97,9 +106,7 @@ const Application = () => {
             onChange={(e) => setCoverLetter(e.target.value)}
           />
           <div>
-            <label
-              style={{ textAlign: "start", display: "block", fontSize: "20px" }}
-            >
+            <label style={{ textAlign: "start", display: "block", fontSize: "20px" }}>
               Select Resume
             </label>
             <input
@@ -111,10 +118,9 @@ const Application = () => {
           </div>
           <button type="submit">Send Application</button>
         </form>
-
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Application
+export default Application;

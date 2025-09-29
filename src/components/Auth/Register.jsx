@@ -16,13 +16,21 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
 
-  const { isAuthorized, setIsAuthorized, user, setUser } = useContext(Context);
+  const { isAuthorized, setIsAuthorized, setUser } = useContext(Context);
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // environment variable
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    if (!name || !email || !phone || !password || !role) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
     try {
       const { data } = await axios.post(
-        "http://localhost:4000/api/v1/user/register",
+        `${API_BASE_URL}/api/v1/user/register`,
         { name, phone, email, role, password },
         {
           headers: {
@@ -31,6 +39,7 @@ const Register = () => {
           withCredentials: true,
         }
       );
+
       toast.success(data.message);
       setName("");
       setEmail("");
@@ -38,95 +47,96 @@ const Register = () => {
       setPhone("");
       setRole("");
       setIsAuthorized(true);
+      setUser(data.user); // set logged-in user in context
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || "Registration failed");
     }
   };
 
-  if(isAuthorized){
-    return <Navigate to={'/'}/>
+  if (isAuthorized) {
+    return <Navigate to="/" />;
   }
 
-
   return (
-    <>
-      <section className="authPage">
-        <div className="container">
-          <div className="header">
-            <img src="/JobZeelogo.png" alt="logo" />
-            <h3>Create a new account</h3>
+    <section className="authPage">
+      <div className="container">
+        <div className="header">
+          <img src="/JobZeelogo.png" alt="logo" />
+          <h3>Create a new account</h3>
+        </div>
+        <form onSubmit={handleRegister}>
+          <div className="inputTag">
+            <label>Register As</label>
+            <div>
+              <select value={role} onChange={(e) => setRole(e.target.value)}>
+                <option value="">Select Role</option>
+                <option value="Employer">Employer</option>
+                <option value="Job Seeker">Job Seeker</option>
+              </select>
+              <FaRegUser />
+            </div>
           </div>
-          <form>
-            <div className="inputTag">
-              <label>Register As</label>
-              <div>
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
-                  <option value="">Select Role</option>
-                  <option value="Employer">Employer</option>
-                  <option value="Job Seeker">Job Seeker</option>
-                </select>
-                <FaRegUser />
-              </div>
+
+          <div className="inputTag">
+            <label>Name</label>
+            <div>
+              <input
+                type="text"
+                placeholder="Zeeshan"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <FaPencilAlt />
             </div>
-            <div className="inputTag">
-              <label>Name</label>
-              <div>
-                <input
-                  type="text"
-                  placeholder="Zeeshan"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <FaPencilAlt />
-              </div>
+          </div>
+
+          <div className="inputTag">
+            <label>Email Address</label>
+            <div>
+              <input
+                type="email"
+                placeholder="zk@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <MdOutlineMailOutline />
             </div>
-            <div className="inputTag">
-              <label>Email Address</label>
-              <div>
-                <input
-                  type="email"
-                  placeholder="zk@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <MdOutlineMailOutline />
-              </div>
+          </div>
+
+          <div className="inputTag">
+            <label>Phone Number</label>
+            <div>
+              <input
+                type="number"
+                placeholder="12345678"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+              <FaPhoneFlip />
             </div>
-            <div className="inputTag">
-              <label>Phone Number</label>
-              <div>
-                <input
-                  type="number"
-                  placeholder="12345678"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-                <FaPhoneFlip />
-              </div>
+          </div>
+
+          <div className="inputTag">
+            <label>Password</label>
+            <div>
+              <input
+                type="password"
+                placeholder="Your Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <RiLock2Fill />
             </div>
-            <div className="inputTag">
-              <label>Password</label>
-              <div>
-                <input
-                  type="password"
-                  placeholder="Your Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <RiLock2Fill />
-              </div>
-            </div>
-            <button type="submit" onClick={handleRegister}>
-              Register
-            </button>
-            <Link to={"/login"}>Login Now</Link>
-          </form>
-        </div>
-        <div className="banner">
-          <img src="/register.png" alt="login" />
-        </div>
-      </section>
-    </>
+          </div>
+
+          <button type="submit">Register</button>
+          <Link to="/login">Login Now</Link>
+        </form>
+      </div>
+      <div className="banner">
+        <img src="/register.png" alt="register" />
+      </div>
+    </section>
   );
 };
 
