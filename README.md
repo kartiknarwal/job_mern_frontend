@@ -1,8 +1,64 @@
-# React + Vite
+# MERN Job App Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the **MERN Job App Frontend**! This project is the React-based user interface for the MERN Job Application platform.
 
-Currently, two official plugins are available:
+## 🚀 Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Clone this repository:**
+    ```bash
+    git clone https://github.com/your-username/Mern_Job_app-frontend.git
+    cd Mern_Job_app-frontend
+    ```
+
+2. **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3. **Start the development server:**
+    ```bash
+    npm start
+    ```
+
+## ⚡ Backend Setup Required
+
+This frontend requires the backend API to function.  
+**Please go to the backend repository to clone or download it:**
+
+- [MERN Job App Backend Repository](https://github.com/kartiknarwal/job_mern_backend)
+
+Follow the backend setup instructions before running the frontend.
+
+## 🛠️ Technologies Used
+
+- React
+- Redux (if used)
+- Axios
+- Tailwind CSS / Bootstrap (if used)
+- Other libraries...
+
+## 📂 Project Structure
+
+```
+src/
+├── components/
+├── pages/
+├── utils/
+├── App.js
+└── index.js
+```
+
+## 💡 Features
+
+- User authentication
+- Job listings
+- Job application
+- Profile management
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+**Happy coding!**
