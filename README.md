@@ -6,7 +6,7 @@ Welcome to the **MERN Job App Frontend**! This project is the React-based user i
 
 1. **Clone this repository:**
     ```bash
-    git clone https://github.com/your-username/Mern_Job_app-frontend.git
+    git clone https://github.com/kartiknarwal/job_mern_frontend
     cd Mern_Job_app-frontend
     ```
 
@@ -55,10 +55,5 @@ src/
 - Job application
 - Profile management
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
 
 **Happy coding!**
