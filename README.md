@@ -2,7 +2,7 @@
 
 Welcome to the **MERN Job App Frontend**! This project is the React-based user interface for the MERN Job Application platform.
 
-## 🚀 Getting Started
+ 🚀 Getting Started
 
 1. **Clone this repository:**
     ```bash
